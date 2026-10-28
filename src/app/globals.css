@@ -2231,3 +2231,20 @@ button {
     object-fit: contain;
   }
 }
+/* NOMBRES DE LAS PRENDAS EN EL CATÁLOGO */
+
+.datos-producto h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--negro);
+}
+
+/* Ajuste para celulares */
+@media (max-width: 480px) {
+  .datos-producto h3 {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+}
