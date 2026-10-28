@@ -518,6 +518,8 @@ export default function Home () {
             <h3>
               {productos.length === 0
                 ? 'Tu próxima prenda favorita te espera'
+                : categoriaActiva === 'Accesorios'
+                ? 'Todavía no hay accesorios en esta categoría'
                 : 'Todavía no hay prendas en esta categoría'}
             </h3>
             <p>
