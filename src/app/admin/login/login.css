@@ -250,3 +250,46 @@
     transition: none;
   }
 }
+/* BOTÓN MONITO PARA MOSTRAR U OCULTAR LA CONTRASEÑA */
+
+.login-admin-password-field {
+  position: relative;
+  width: 100%;
+}
+
+.login-admin-password-field input {
+  padding-right: 62px;
+}
+
+.login-admin-form .login-admin-password-toggle {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-height: 36px;
+  margin: 0;
+  padding: 4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  letter-spacing: normal;
+  box-shadow: none;
+  cursor: pointer;
+  transform: none;
+}
+
+.login-admin-form .login-admin-password-toggle:hover {
+  background: #fcf8ef;
+  box-shadow: none;
+  transform: none;
+}
+
+.login-admin-form .login-admin-password-toggle:focus-visible {
+  outline: 2px solid #c5a052;
+  outline-offset: 1px;
+}

@@ -11,6 +11,7 @@ export default function AdminLoginPage () {
   const [password, setPassword] = useState('')
   const [errorMensaje, setErrorMensaje] = useState('')
   const [cargando, setCargando] = useState(false)
+  const [mostrarContrasena, setMostrarContrasena] = useState(false)
 
   async function iniciarSesion (evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
@@ -90,16 +91,32 @@ export default function AdminLoginPage () {
 
           <label htmlFor='admin-password'>Contraseña</label>
 
-          <input
-            id='admin-password'
-            type='password'
-            autoComplete='current-password'
-            value={password}
-            onChange={evento => setPassword(evento.target.value)}
-            placeholder='Ingresá tu contraseña'
-            required
-          />
+          <div className='login-admin-password-field'>
+            <input
+              id='admin-password'
+              type={mostrarContrasena ? 'text' : 'password'}
+              autoComplete='current-password'
+              value={password}
+              onChange={evento => setPassword(evento.target.value)}
+              placeholder='Ingresá tu contraseña'
+              required
+            />
 
+            <button
+              type='button'
+              className='login-admin-password-toggle'
+              onClick={() => setMostrarContrasena(actual => !actual)}
+              aria-label={
+                mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              }
+              title={
+                mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              }
+              aria-pressed={mostrarContrasena}
+            >
+              {mostrarContrasena ? '🐵' : '🙈'}
+            </button>
+          </div>
           {errorMensaje && (
             <p className='login-admin-error' role='alert'>
               {errorMensaje}

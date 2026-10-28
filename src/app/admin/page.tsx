@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import './admin.css'
 import { createClient } from '@/lib/supabase/client'
 import { optimizarFotografia } from '@/lib/optimizar-fotografia'
+import SelectorColor from './SelectorColor'
 
 import {
   categorias,
@@ -1348,18 +1349,15 @@ export default function AdminPage () {
                           />
                         </label>
 
-                        <label>
+                        <div className='admin-selector-color-campo'>
                           <span>Muestra</span>
-                          <input
-                            type='color'
-                            value={nuevoCodigoColor}
-                            onChange={event =>
-                              setNuevoCodigoColor(event.target.value)
-                            }
-                            aria-label='Elegir muestra de color'
-                          />
-                        </label>
 
+                          <SelectorColor
+                            color={nuevoCodigoColor}
+                            onChange={setNuevoCodigoColor}
+                            label='Elegir tono'
+                          />
+                        </div>
                         <button
                           type='button'
                           className='admin-boton-secundario'
@@ -1380,17 +1378,13 @@ export default function AdminPage () {
                           />
                           <span>{color.nombre}</span>
 
-                          <input
-                            className='admin-color-chip-picker'
-                            type='color'
-                            value={color.codigo}
-                            onChange={event =>
-                              actualizarColorCodigo(
-                                color.nombre,
-                                event.target.value
-                              )
+                          <SelectorColor
+                            color={color.codigo}
+                            onChange={codigo =>
+                              actualizarColorCodigo(color.nombre, codigo)
                             }
-                            aria-label={`Cambiar muestra de ${color.nombre}`}
+                            label={`Editar ${color.nombre}`}
+                            compacto
                           />
 
                           <button

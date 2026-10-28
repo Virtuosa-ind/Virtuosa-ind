@@ -476,25 +476,9 @@ input:focus-visible {
   background: var(--blanco);
 }
 
-.foto-producto {
-  position: relative;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  background: var(--rosa);
-}
-
-.foto-producto img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.4s;
-}
-
 .tarjeta-producto:hover .foto-producto img {
-  transform: scale(1.04);
+  transform: scale(1);
 }
-
 .etiqueta-producto {
   position: absolute;
   top: 12px;
@@ -1886,32 +1870,58 @@ button {
     height: 27px;
   }
 }
-/* =========================================
-   TARJETAS DEL CATÁLOGO
-   ========================================= */
+/* ==========================================
+   GRILLA UNIFORME DEL CATÁLOGO
+========================================== */
 
+.grilla-productos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.foto-producto,
 .foto-producto-boton {
   display: block;
+  position: relative;
   width: 100%;
+  aspect-ratio: 3 / 4;
   padding: 0;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
   overflow: hidden;
+  border: 0;
+  background: var(--rosa-claro);
 }
 
-.foto-producto-boton:focus-visible {
-  outline: 2px solid var(--dorado);
-  outline-offset: 3px;
-}
-
+.foto-producto img,
 .foto-producto-boton img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 1050px) {
+  .grilla-productos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grilla-productos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+/* =========================================
+   TARJETAS DEL CATÁLOGO
+   ========================================= */
+
+.foto-producto-boton:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 3px;
 }
 
 /* =========================================
@@ -1978,35 +1988,27 @@ button {
   color: var(--blanco);
 }
 
-/* Fotografía */
+/* Fotografía completa en los detalles del producto */
 
 .detalle-producto-imagen {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
+  width: 100%;
+  aspect-ratio: auto;
+  overflow: visible;
   background-color: var(--rosa-claro);
 }
 
 .detalle-producto-imagen > img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.detalle-producto-imagen .imagen-sin-foto {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  text-align: center;
+  height: auto;
+  max-width: 100%;
+  max-height: 65dvh;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* Información y precio */
@@ -2095,9 +2097,18 @@ button {
 
   .detalle-producto-imagen {
     width: 100%;
-    max-height: 34vh;
-    max-height: 34dvh;
-    aspect-ratio: 4 / 3;
+    max-height: none;
+    aspect-ratio: auto;
+    overflow: visible;
+  }
+
+  .detalle-producto-imagen > img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 40dvh;
+    object-fit: contain;
+    object-position: center;
   }
 
   .detalle-producto-contenido {
@@ -2120,5 +2131,103 @@ button {
 
   .detalle-producto-contenido .boton-agregar {
     margin-top: 22px;
+  }
+}
+/* ==========================================
+   FOTOGRAFÍAS UNIFORMES - VIRTUOSA IND
+========================================== */
+
+/* FRONT: grilla de productos */
+.grilla-productos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.foto-producto,
+.foto-producto-boton {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: var(--rosa-claro);
+}
+
+.foto-producto img,
+.foto-producto-boton img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: none;
+}
+
+.foto-producto-boton:focus-visible {
+  outline: 2px solid var(--dorado);
+  outline-offset: 3px;
+}
+
+/* RESPONSIVE: tabletas y celulares */
+@media (max-width: 1050px) {
+  .grilla-productos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grilla-productos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+/* DETALLES: mostrar la fotografía completa */
+.detalle-producto-imagen {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: auto;
+  overflow: visible;
+  background: var(--rosa-claro);
+}
+
+.detalle-producto-imagen > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 65dvh;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* CARRITO: miniaturas del mismo tamaño */
+.item-carrito > img {
+  display: block;
+  width: 90px;
+  height: 120px;
+  flex: 0 0 90px;
+  object-fit: cover;
+  object-position: center;
+  background: var(--rosa-claro);
+}
+
+/* DETALLES en celulares */
+@media (max-width: 640px) {
+  .detalle-producto-imagen {
+    max-height: none;
+  }
+
+  .detalle-producto-imagen > img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 40dvh;
+    object-fit: contain;
   }
 }
