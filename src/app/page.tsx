@@ -432,7 +432,11 @@ export default function Home () {
                 ? 'Nuestra colección'
                 : categoriaActiva}
             </h2>
-            <p>Encontrá prendas que reflejen tu personalidad.</p>
+            <p>
+              {categoriaActiva === 'Accesorios'
+                ? 'Encontrá accesorios que reflejen tu personalidad.'
+                : 'Encontrá prendas que reflejen tu personalidad.'}
+            </p>
           </div>
 
           {categoriaActiva !== 'Todos los productos' && (
