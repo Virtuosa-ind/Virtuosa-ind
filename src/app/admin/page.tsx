@@ -474,6 +474,63 @@ export default function AdminPage () {
     setMensaje('')
   }
 
+  function seleccionarTalleUnicoFormulario () {
+    const esTalleUnico = (talle: string) =>
+      talle.trim().toLocaleLowerCase() === 'único'
+
+    const variantesNormales = variantesFormulario.filter(
+      variante => !esTalleUnico(variante.talle)
+    )
+
+    if (
+      variantesNormales.length > 0 &&
+      !window.confirm(
+        'Al elegir Talle único, se reemplazarán los talles y las combinaciones actuales que no sean de talle único. ¿Querés continuar?'
+      )
+    ) {
+      return
+    }
+
+    const variantesUnicas = variantesFormulario.filter(
+      variante =>
+        esTalleUnico(variante.talle) &&
+        coloresFormulario.some(
+          color =>
+            color.nombre.toLocaleLowerCase() ===
+            variante.color.toLocaleLowerCase()
+        )
+    )
+
+    const nuevasVariantes: VarianteFormulario[] = coloresFormulario
+      .filter(
+        color =>
+          !variantesUnicas.some(
+            variante =>
+              variante.color.toLocaleLowerCase() ===
+              color.nombre.toLocaleLowerCase()
+          )
+      )
+      .map(color => ({
+        id: crypto.randomUUID(),
+        color: color.nombre,
+        codigoColor: color.codigo,
+        talle: 'Único',
+        stock: ''
+      }))
+
+    setTallesFormulario(['Único'])
+    setVariantesFormulario([...variantesUnicas, ...nuevasVariantes])
+    setTallesCombinacion([])
+    setNuevoTalle('')
+    setColorCombinacion(coloresFormulario[0]?.nombre ?? '')
+
+    setMensaje(
+      coloresFormulario.length > 0
+        ? 'Talle único configurado. Se creó una combinación por color. Revisá el stock de cada una si lo conocés.'
+        : 'Talle único seleccionado. Agregá primero los colores y volvé a pulsar el botón para crear sus combinaciones.'
+    )
+  }
+
   function quitarTalleFormulario (talle: string) {
     const tieneVariantes = variantesFormulario.some(variante =>
       separarTalles(variante.talle).some(
@@ -1586,6 +1643,13 @@ export default function AdminPage () {
 
                   <div className='admin-gestor-bloque'>
                     <h4>2. Talles disponibles</h4>
+                    <button
+                      type='button'
+                      className='admin-boton-secundario'
+                      onClick={seleccionarTalleUnicoFormulario}
+                    >
+                      Talle único
+                    </button>
 
                     <div className='admin-gestor-entrada admin-gestor-talles'>
                       <label>

@@ -145,13 +145,21 @@ export default function Home () {
 
     // Los productos con variantes requieren elegir una combinación existente.
     if (producto.variantes.length > 0) {
-      talle = tallesElegidos[producto.id] || ''
-
       const nombreColor = coloresElegidos[producto.id] || ''
 
-      if (!talle || !nombreColor) {
+      const esTalleUnico =
+        producto.talles.length === 1 &&
+        producto.talles[0].trim().toLocaleLowerCase() === 'único'
+
+      talle = esTalleUnico
+        ? producto.talles[0]
+        : tallesElegidos[producto.id] || ''
+
+      if ((!esTalleUnico && !talle) || !nombreColor) {
         alert(
-          'Elegí el talle y el color antes de agregar la prenda al carrito.'
+          esTalleUnico
+            ? 'Elegí un color antes de agregar la prenda al carrito.'
+            : 'Elegí el talle y el color antes de agregar la prenda al carrito.'
         )
 
         return false
