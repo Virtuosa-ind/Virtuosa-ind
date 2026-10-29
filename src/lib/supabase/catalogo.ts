@@ -19,6 +19,7 @@ export type ProductoTienda = {
   categoria: string
   precio: number
   imagen: string
+  imagenes: string[]
   descripcion?: string
   talles: string[]
   colores: OpcionColor[]
@@ -139,6 +140,7 @@ export async function obtenerCatalogoPublicado (): Promise<ProductoTienda[]> {
       categoria: producto.categoria,
       precio: Number(producto.precio),
       imagen: fotosProducto[0] ?? '',
+      imagenes: fotosProducto,
       descripcion: producto.descripcion ?? '',
       talles: tallesProducto,
       colores: coloresProducto,

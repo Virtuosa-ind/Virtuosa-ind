@@ -40,6 +40,7 @@ export default function Home () {
   const [productoAbierto, setProductoAbierto] = useState<ProductoTienda | null>(
     null
   )
+  const [fotoActiva, setFotoActiva] = useState(0)
 
   const [categoriaActiva, setCategoriaActiva] = useState('Todos los productos')
 
@@ -108,6 +109,15 @@ export default function Home () {
     (total, item) => total + item.precioUnitario * item.cantidad,
     0
   )
+  const fotosDetalle = productoAbierto
+    ? productoAbierto.imagenes?.length
+      ? productoAbierto.imagenes
+      : productoAbierto.imagen
+      ? [productoAbierto.imagen]
+      : []
+    : []
+
+  const fotoVisible = fotosDetalle[fotoActiva] ?? fotosDetalle[0] ?? ''
 
   function seleccionarCategoria (categoria: string) {
     setCategoriaActiva(categoria)
@@ -527,32 +537,68 @@ export default function Home () {
           <div className='grilla-productos'>
             {productosFiltrados.map(producto => (
               <article className='tarjeta-producto' key={producto.id}>
-                <button
-                  type='button'
-                  className='foto-producto foto-producto-boton'
-                  aria-label={`Ver detalles de ${producto.nombre}`}
-                  onClick={() => setProductoAbierto(producto)}
-                  style={
-                    !producto.imagen
-                      ? {
-                          background: `linear-gradient(145deg, ${
-                            producto.colores[0]?.codigo || '#f4dce5'
-                          } 0%, #f5f0f1 100%)`
-                        }
-                      : undefined
-                  }
-                >
-                  {producto.imagen ? (
-                    <img src={producto.imagen} alt={producto.nombre} />
-                  ) : (
-                    <div className='imagen-sin-foto'>
-                      <span className='texto-prenda-prueba'>
-                        V<span>.</span>I
-                      </span>
-                      <span>{producto.nombre}</span>
+                <div className='producto-fotos-tarjeta'>
+                  <button
+                    type='button'
+                    className='foto-producto foto-producto-boton'
+                    aria-label={`Ver detalles de ${producto.nombre}`}
+                    onClick={() => {
+                      setFotoActiva(0)
+                      setProductoAbierto(producto)
+                    }}
+                    style={
+                      !(producto.imagenes?.[0] || producto.imagen)
+                        ? {
+                            background: `linear-gradient(145deg, ${
+                              producto.colores[0]?.codigo || '#f4dce5'
+                            } 0%, #f5f0f1 100%)`
+                          }
+                        : undefined
+                    }
+                  >
+                    {producto.imagenes?.[0] || producto.imagen ? (
+                      <img
+                        src={producto.imagenes?.[0] || producto.imagen}
+                        alt={producto.nombre}
+                      />
+                    ) : (
+                      <div className='imagen-sin-foto'>
+                        <span className='texto-prenda-prueba'>
+                          V<span>.</span>I
+                        </span>
+                        <span>{producto.nombre}</span>
+                      </div>
+                    )}
+                  </button>
+
+                  {producto.imagenes && producto.imagenes.length > 1 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '6px',
+                        overflowX: 'auto',
+                        paddingTop: '8px',
+                        paddingBottom: '4px'
+                      }}
+                    >
+                      {producto.imagenes.slice(1).map((foto, indice) => (
+                        <img
+                          key={`${producto.id}-foto-${indice}`}
+                          src={foto}
+                          alt={`${producto.nombre} - foto ${indice + 1}`}
+                          loading='lazy'
+                          style={{
+                            width: '56px',
+                            height: '68px',
+                            objectFit: 'cover',
+                            borderRadius: '6px',
+                            flex: '0 0 auto'
+                          }}
+                        />
+                      ))}
                     </div>
                   )}
-                </button>
+                </div>
 
                 <div className='datos-producto'>
                   <h3>{producto.nombre}</h3>
@@ -618,28 +664,147 @@ export default function Home () {
             </button>
 
             <div
-              className='detalle-producto-imagen'
-              style={
-                !productoAbierto.imagen
-                  ? {
-                      background: `linear-gradient(145deg, ${
-                        productoAbierto.colores[0]?.codigo || '#f4dce5'
-                      } 0%, #f5f0f1 100%)`
-                    }
-                  : undefined
-              }
+              className='detalle-producto-galeria'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                minWidth: 0
+              }}
             >
-              {productoAbierto.imagen ? (
-                <img
-                  src={productoAbierto.imagen}
-                  alt={productoAbierto.nombre}
-                />
-              ) : (
-                <div className='imagen-sin-foto'>
-                  <span className='texto-prenda-prueba'>
-                    V<span>.</span>I
-                  </span>
-                  <span>{productoAbierto.nombre}</span>
+              <div
+                className='detalle-producto-imagen'
+                style={
+                  !fotoVisible
+                    ? {
+                        background: `linear-gradient(145deg, ${
+                          productoAbierto.colores[0]?.codigo || '#f4dce5'
+                        } 0%, #f5f0f1 100%)`
+                      }
+                    : undefined
+                }
+              >
+                {fotoVisible ? (
+                  <img
+                    src={fotoVisible}
+                    alt={`${productoAbierto.nombre} - foto ${fotoActiva + 1}`}
+                  />
+                ) : (
+                  <div className='imagen-sin-foto'>
+                    <span className='texto-prenda-prueba'>
+                      V<span>.</span>I
+                    </span>
+                    <span>{productoAbierto.nombre}</span>
+                  </div>
+                )}
+              </div>
+
+              {fotosDetalle.length > 1 && (
+                <div
+                  className='detalle-producto-miniaturas'
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    width: '100%',
+                    minWidth: 0
+                  }}
+                >
+                  <button
+                    type='button'
+                    aria-label='Ver foto anterior'
+                    title='Foto anterior'
+                    onClick={() =>
+                      setFotoActiva(
+                        actual =>
+                          (actual - 1 + fotosDetalle.length) %
+                          fotosDetalle.length
+                      )
+                    }
+                    style={{
+                      flex: '0 0 32px',
+                      height: '36px',
+                      border: '1px solid #c5a052',
+                      borderRadius: '6px',
+                      background: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '22px'
+                    }}
+                  >
+                    ‹
+                  </button>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '7px',
+                      overflowX: 'auto',
+                      minWidth: 0,
+                      padding: '3px',
+                      flex: '1 1 auto'
+                    }}
+                  >
+                    {fotosDetalle.map((foto, indice) =>
+                      indice === fotoActiva ? null : (
+                        <button
+                          key={`${productoAbierto.id}-detalle-foto-${indice}`}
+                          type='button'
+                          aria-label={`Ver foto ${indice + 1}`}
+                          title={`Ver foto ${indice + 1}`}
+                          onClick={() => setFotoActiva(indice)}
+                          style={{
+                            flex: '0 0 62px',
+                            width: '62px',
+                            height: '76px',
+                            padding: 0,
+                            overflow: 'hidden',
+                            border: '1px solid #c5a052',
+                            borderRadius: '6px',
+                            background: '#fff',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={foto}
+                            alt={`${productoAbierto.nombre} - foto ${
+                              indice + 1
+                            }`}
+                            loading='lazy'
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              display: 'block'
+                            }}
+                          />
+                        </button>
+                      )
+                    )}
+                  </div>
+
+                  <button
+                    type='button'
+                    aria-label='Ver foto siguiente'
+                    title='Foto siguiente'
+                    onClick={() =>
+                      setFotoActiva(
+                        actual => (actual + 1) % fotosDetalle.length
+                      )
+                    }
+                    style={{
+                      flex: '0 0 32px',
+                      height: '36px',
+                      border: '1px solid #c5a052',
+                      borderRadius: '6px',
+                      background: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '22px'
+                    }}
+                  >
+                    ›
+                  </button>
                 </div>
               )}
             </div>

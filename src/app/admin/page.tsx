@@ -99,6 +99,9 @@ function separarTalles (valor: string): string[] {
 
 export default function AdminPage () {
   const [productos, setProductos] = useState<Producto[]>([])
+  const [fotoActivaPorProducto, setFotoActivaPorProducto] = useState<
+    Record<string, number>
+  >({})
   const [cargando, setCargando] = useState(true)
 
   const [seccionActiva, setSeccionActiva] = useState<Seccion>('productos')
@@ -1003,22 +1006,166 @@ export default function AdminPage () {
               <div className='admin-productos-grid'>
                 {productosFiltrados.map(producto => (
                   <article className='admin-producto-card' key={producto.id}>
-                    <div className='admin-producto-foto'>
-                      {producto.fotos?.[0] ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={producto.fotos[0]} alt={producto.nombre} />
-                      ) : (
-                        <div className='admin-sin-foto'>
-                          <span>◇</span>
-                          <small>Sin fotografía</small>
+                    <div className='admin-producto-fotos-contenedor'>
+                      <div
+                        className='admin-producto-foto'
+                        style={{ position: 'relative' }}
+                      >
+                        {producto.fotos?.[
+                          fotoActivaPorProducto[producto.id] ?? 0
+                        ] ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={
+                              producto.fotos[
+                                fotoActivaPorProducto[producto.id] ?? 0
+                              ]
+                            }
+                            alt={`${producto.nombre} - foto ${
+                              (fotoActivaPorProducto[producto.id] ?? 0) + 1
+                            }`}
+                          />
+                        ) : (
+                          <div className='admin-sin-foto'>
+                            <span>◇</span>
+                            <small>Sin fotografía</small>
+                          </div>
+                        )}
+
+                        {(producto.fotos?.length ?? 0) > 1 && (
+                          <>
+                            <button
+                              type='button'
+                              aria-label='Ver foto anterior'
+                              title='Foto anterior'
+                              onClick={() =>
+                                setFotoActivaPorProducto(actuales => ({
+                                  ...actuales,
+                                  [producto.id]:
+                                    ((actuales[producto.id] ?? 0) -
+                                      1 +
+                                      producto.fotos!.length) %
+                                    producto.fotos!.length
+                                }))
+                              }
+                              style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '8px',
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
+                                width: '32px',
+                                height: '36px',
+                                border: '1px solid #c5a052',
+                                borderRadius: '6px',
+                                background: 'rgba(255,255,255,0.95)',
+                                cursor: 'pointer',
+                                fontSize: '22px'
+                              }}
+                            >
+                              ‹
+                            </button>
+
+                            <button
+                              type='button'
+                              aria-label='Ver foto siguiente'
+                              title='Foto siguiente'
+                              onClick={() =>
+                                setFotoActivaPorProducto(actuales => ({
+                                  ...actuales,
+                                  [producto.id]:
+                                    ((actuales[producto.id] ?? 0) + 1) %
+                                    producto.fotos!.length
+                                }))
+                              }
+                              style={{
+                                position: 'absolute',
+                                top: '50%',
+                                right: '8px',
+                                transform: 'translateY(-50%)',
+                                zIndex: 2,
+                                width: '32px',
+                                height: '36px',
+                                border: '1px solid #c5a052',
+                                borderRadius: '6px',
+                                background: 'rgba(255,255,255,0.95)',
+                                cursor: 'pointer',
+                                fontSize: '22px'
+                              }}
+                            >
+                              ›
+                            </button>
+                          </>
+                        )}
+
+                        <span
+                          className={`admin-estado admin-estado-${producto.estado}`}
+                        >
+                          {textoEstado(producto.estado)}
+                        </span>
+                      </div>
+
+                      {(producto.fotos?.length ?? 0) > 1 && (
+                        <div
+                          className='admin-producto-miniaturas'
+                          style={{
+                            display: 'flex',
+                            gap: '6px',
+                            overflowX: 'auto',
+                            padding: '8px 2px 4px'
+                          }}
+                        >
+                          {producto.fotos!.map((foto, indice) => {
+                            const fotoActual =
+                              fotoActivaPorProducto[producto.id] ?? 0
+
+                            if (indice === fotoActual) {
+                              return null
+                            }
+
+                            return (
+                              <button
+                                key={`${producto.id}-foto-${indice}`}
+                                type='button'
+                                aria-label={`Mostrar foto ${indice + 1}`}
+                                title={`Mostrar foto ${indice + 1}`}
+                                onClick={() =>
+                                  setFotoActivaPorProducto(actuales => ({
+                                    ...actuales,
+                                    [producto.id]: indice
+                                  }))
+                                }
+                                style={{
+                                  flex: '0 0 54px',
+                                  width: '54px',
+                                  height: '64px',
+                                  padding: 0,
+                                  overflow: 'hidden',
+                                  border: '1px solid #c5a052',
+                                  borderRadius: '6px',
+                                  background: '#fff',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={foto}
+                                  alt={`${producto.nombre} - foto ${
+                                    indice + 1
+                                  }`}
+                                  loading='lazy'
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    display: 'block'
+                                  }}
+                                />
+                              </button>
+                            )
+                          })}
                         </div>
                       )}
-
-                      <span
-                        className={`admin-estado admin-estado-${producto.estado}`}
-                      >
-                        {textoEstado(producto.estado)}
-                      </span>
                     </div>
 
                     <div className='admin-producto-info'>
