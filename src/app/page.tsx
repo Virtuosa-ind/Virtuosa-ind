@@ -120,21 +120,29 @@ export default function Home () {
 
   function agregarAlCarrito (producto: ProductoTienda): boolean {
     let talle = 'Único'
+
     let color: OpcionColor = {
       nombre: 'Único',
       codigo: '#f5f0f1'
     }
-    let precioUnitario = producto.precio
+
+    // Cada prenda tiene un único precio.
+    const precioUnitario = producto.precio
+
+    // Si no se informó el stock, la disponibilidad se confirma por WhatsApp.
+    let stockDisponible: number | null = null
 
     // Los productos con variantes requieren elegir una combinación existente.
     if (producto.variantes.length > 0) {
       talle = tallesElegidos[producto.id] || ''
+
       const nombreColor = coloresElegidos[producto.id] || ''
 
       if (!talle || !nombreColor) {
         alert(
           'Elegí el talle y el color antes de agregar la prenda al carrito.'
         )
+
         return false
       }
 
@@ -144,13 +152,17 @@ export default function Home () {
 
       if (!variante) {
         alert('Esa combinación de color y talle no está disponible.')
+
         return false
       }
 
-      if (variante.stock === 0) {
+      if (typeof variante.stock === 'number' && variante.stock <= 0) {
         alert('Esta variante está agotada. Elegí otra combinación.')
+
         return false
       }
+
+      stockDisponible = variante.stock
 
       color = {
         nombre: variante.color,
@@ -160,19 +172,39 @@ export default function Home () {
             ?.codigo ||
           '#929292'
       }
+    }
 
-      precioUnitario = variante.precio ?? producto.precio
+    // Buscar si la misma combinación ya está en el carrito.
+    const existente = carrito.find(
+      item =>
+        item.producto.id === producto.id &&
+        item.talle === talle &&
+        item.color.nombre === color.nombre
+    )
+
+    const cantidadActual = existente?.cantidad ?? 0
+
+    // Si hay stock registrado, no permitir superar esa cantidad.
+    if (
+      typeof stockDisponible === 'number' &&
+      cantidadActual >= stockDisponible
+    ) {
+      alert(
+        `Solo hay ${stockDisponible} unidad(es) disponibles de esta combinación.`
+      )
+
+      return false
     }
 
     setCarrito(actual => {
-      const existente = actual.find(
+      const yaExiste = actual.some(
         item =>
           item.producto.id === producto.id &&
           item.talle === talle &&
           item.color.nombre === color.nombre
       )
 
-      if (existente) {
+      if (yaExiste) {
         return actual.map(item =>
           item.producto.id === producto.id &&
           item.talle === talle &&
@@ -203,6 +235,28 @@ export default function Home () {
     colorNombre: string,
     cambio: number
   ) {
+    const itemActual = carrito.find(
+      item =>
+        item.producto.id === id &&
+        item.talle === talle &&
+        item.color.nombre === colorNombre
+    )
+
+    // Antes de aumentar, verificamos el stock de esa combinación.
+    if (cambio > 0 && itemActual) {
+      const variante = itemActual.producto.variantes.find(
+        opcion => opcion.color === colorNombre && opcion.talle === talle
+      )
+
+      const stock = variante?.stock
+
+      if (typeof stock === 'number' && itemActual.cantidad + cambio > stock) {
+        alert(`Solo hay ${stock} unidad(es) disponibles de esta combinación.`)
+
+        return
+      }
+    }
+
     setCarrito(actual =>
       actual
         .map(item =>
@@ -627,7 +681,11 @@ export default function Home () {
 
                         const todasAgotadas =
                           variantesColor.length > 0 &&
-                          variantesColor.every(variante => variante.stock === 0)
+                          variantesColor.every(
+                            variante =>
+                              typeof variante.stock === 'number' &&
+                              variante.stock <= 0
+                          )
 
                         return (
                           <button
@@ -682,7 +740,9 @@ export default function Home () {
                             opcion.color === colorElegido
                         )
 
-                        const agotado = variante?.stock === 0
+                        const agotado =
+                          typeof variante?.stock === 'number' &&
+                          variante.stock <= 0
                         const combinacionInexistente =
                           Boolean(colorElegido) && !variante
 
@@ -736,7 +796,10 @@ export default function Home () {
                           )
                         }
 
-                        if (variante.stock === 0) {
+                        if (
+                          typeof variante.stock === 'number' &&
+                          variante.stock <= 0
+                        ) {
                           return (
                             <p className='detalle-variante-aviso'>Agotada</p>
                           )

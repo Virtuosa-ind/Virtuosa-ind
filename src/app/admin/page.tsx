@@ -28,7 +28,6 @@ type VarianteFormulario = {
   codigoColor: string
   talle: string
   stock: string
-  precio: string
 }
 
 type ColorFormulario = {
@@ -307,8 +306,7 @@ export default function AdminPage () {
         color: variante.color,
         codigoColor: variante.colorCodigo ?? obtenerCodigoColor(variante.color),
         talle: variante.talle,
-        stock: String(variante.stock),
-        precio: variante.precio === undefined ? '' : String(variante.precio)
+        stock: variante.stock === null ? '' : String(variante.stock)
       }))
     )
 
@@ -546,8 +544,7 @@ export default function AdminPage () {
       color: color.nombre,
       codigoColor: color.codigo,
       talle,
-      stock: '0',
-      precio: ''
+      stock: ''
     }))
 
     setVariantesFormulario(actuales => [...actuales, ...nuevasVariantes])
@@ -651,11 +648,8 @@ export default function AdminPage () {
     const variantes: VarianteProducto[] = variantesFormulario
       .filter(variante => variante.color.trim() && variante.talle.trim())
       .map(variante => {
-        const stockNumero = Number(variante.stock)
-
-        const precioVariante = variante.precio.trim()
-          ? Number(variante.precio)
-          : undefined
+        const stockTexto = variante.stock.trim()
+        const stockNumero = stockTexto === '' ? null : Number(stockTexto)
 
         return {
           id: variante.id,
@@ -663,14 +657,11 @@ export default function AdminPage () {
           colorCodigo: variante.codigoColor,
           talle: variante.talle.trim(),
           stock:
-            Number.isFinite(stockNumero) && stockNumero >= 0
+            stockNumero === null
+              ? null
+              : Number.isFinite(stockNumero) && stockNumero >= 0
               ? Math.floor(stockNumero)
-              : 0,
-          ...(precioVariante !== undefined &&
-          Number.isFinite(precioVariante) &&
-          precioVariante >= 0
-            ? { precio: precioVariante }
-            : {})
+              : 0
         }
       })
 
@@ -1580,24 +1571,6 @@ export default function AdminPage () {
                                 event.target.value
                               )
                             }
-                          />
-                        </label>
-
-                        <label>
-                          <span>Precio particular (opcional)</span>
-                          <input
-                            type='number'
-                            min='0'
-                            step='0.01'
-                            value={variante.precio}
-                            onChange={event =>
-                              actualizarVariante(
-                                variante.id,
-                                'precio',
-                                event.target.value
-                              )
-                            }
-                            placeholder='Usar precio general'
                           />
                         </label>
 

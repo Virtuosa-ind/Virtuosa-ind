@@ -20,8 +20,7 @@ export type VarianteProducto = {
   color: string
   colorCodigo?: string
   talle: string
-  stock: number
-  precio?: number
+  stock: number | null
 }
 
 export type Producto = {

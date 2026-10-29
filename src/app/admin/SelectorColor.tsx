@@ -202,8 +202,8 @@ export default function SelectorColor ({
     }
   }, [abierto])
 
-  function confirmarCodigo () {
-    if (codigoEditado === null) return
+  function confirmarCodigo (): boolean {
+    if (codigoEditado === null) return true
 
     const convertido = convertirCodigo(codigoEditado, formato)
 
@@ -215,12 +215,15 @@ export default function SelectorColor ({
           ? 'Usá RGB entre 0 y 255, por ejemplo rgb(197, 160, 82).'
           : 'Usá HSL con tono 0–360 y porcentajes 0–100.'
       )
-      return
+
+      return false
     }
 
     setErrorCodigo('')
     setCodigoEditado(null)
     onChange(convertido)
+
+    return true
   }
 
   return (
@@ -375,8 +378,9 @@ export default function SelectorColor ({
                 type='button'
                 className='vi-color-confirmar'
                 onClick={() => {
-                  confirmarCodigo()
-                  if (!errorCodigo) setAbierto(false)
+                  if (confirmarCodigo()) {
+                    setAbierto(false)
+                  }
                 }}
               >
                 Listo

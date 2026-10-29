@@ -11,7 +11,6 @@ export type VarianteTienda = {
   colorCodigo: string
   talle: string
   stock: number | null
-  precio?: number
 }
 
 export type ProductoTienda = {
@@ -143,13 +142,13 @@ export async function obtenerCatalogoPublicado (): Promise<ProductoTienda[]> {
       descripcion: producto.descripcion ?? '',
       talles: tallesProducto,
       colores: coloresProducto,
+
       variantes: variantesProducto.map(variante => ({
         id: variante.id,
         color: variante.color_nombre,
         colorCodigo: variante.color_codigo,
         talle: variante.talle,
-        stock: variante.stock,
-        ...(variante.precio !== null ? { precio: Number(variante.precio) } : {})
+        stock: variante.stock
       }))
     }
   })
