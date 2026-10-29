@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   obtenerCatalogoPublicado,
   type OpcionColor,
@@ -41,6 +41,7 @@ export default function Home () {
     null
   )
   const [fotoActiva, setFotoActiva] = useState(0)
+  const inicioToqueDetalle = useRef<number | null>(null)
 
   const [categoriaActiva, setCategoriaActiva] = useState('Todos los productos')
 
@@ -674,6 +675,36 @@ export default function Home () {
             >
               <div
                 className='detalle-producto-imagen'
+                onTouchStart={evento => {
+                  inicioToqueDetalle.current =
+                    evento.changedTouches[0]?.clientX ?? null
+                }}
+                onTouchEnd={evento => {
+                  const inicio = inicioToqueDetalle.current
+                  const fin = evento.changedTouches[0]?.clientX
+
+                  inicioToqueDetalle.current = null
+
+                  if (
+                    inicio === null ||
+                    fin === undefined ||
+                    fotosDetalle.length < 2
+                  ) {
+                    return
+                  }
+
+                  const desplazamiento = inicio - fin
+
+                  if (Math.abs(desplazamiento) < 45) return
+
+                  setFotoActiva(
+                    actual =>
+                      (actual +
+                        (desplazamiento > 0 ? 1 : -1) +
+                        fotosDetalle.length) %
+                      fotosDetalle.length
+                  )
+                }}
                 style={
                   !fotoVisible
                     ? {

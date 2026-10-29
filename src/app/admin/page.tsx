@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import './admin.css'
 import { createClient } from '@/lib/supabase/client'
 import { optimizarFotografia } from '@/lib/optimizar-fotografia'
@@ -102,6 +102,10 @@ export default function AdminPage () {
   const [fotoActivaPorProducto, setFotoActivaPorProducto] = useState<
     Record<string, number>
   >({})
+  const inicioDeslizamientoFotos = useRef<{
+    x: number
+    productoId: string
+  } | null>(null)
   const [cargando, setCargando] = useState(true)
 
   const [seccionActiva, setSeccionActiva] = useState<Seccion>('productos')
@@ -1009,7 +1013,49 @@ export default function AdminPage () {
                     <div className='admin-producto-fotos-contenedor'>
                       <div
                         className='admin-producto-foto'
-                        style={{ position: 'relative' }}
+                        style={{
+                          position: 'relative',
+                          touchAction: 'pan-y'
+                        }}
+                        onTouchStart={evento => {
+                          const x = evento.changedTouches[0]?.clientX
+
+                          if (x !== undefined) {
+                            inicioDeslizamientoFotos.current = {
+                              x,
+                              productoId: producto.id
+                            }
+                          }
+                        }}
+                        onTouchEnd={evento => {
+                          const inicio = inicioDeslizamientoFotos.current
+                          const fin = evento.changedTouches[0]?.clientX
+                          const fotos = producto.fotos ?? []
+
+                          inicioDeslizamientoFotos.current = null
+
+                          if (
+                            !inicio ||
+                            fin === undefined ||
+                            inicio.productoId !== producto.id ||
+                            fotos.length < 2
+                          ) {
+                            return
+                          }
+
+                          const desplazamiento = inicio.x - fin
+
+                          if (Math.abs(desplazamiento) < 45) return
+
+                          setFotoActivaPorProducto(actuales => ({
+                            ...actuales,
+                            [producto.id]:
+                              ((actuales[producto.id] ?? 0) +
+                                (desplazamiento > 0 ? 1 : -1) +
+                                fotos.length) %
+                              fotos.length
+                          }))
+                        }}
                       >
                         {producto.fotos?.[
                           fotoActivaPorProducto[producto.id] ?? 0
