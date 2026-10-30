@@ -2248,3 +2248,69 @@ button {
     line-height: 1.4;
   }
 }
+
+/* INFORMACIÓN DE LAS TARJETAS DE PRODUCTOS */
+
+.categoria-producto {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--dorado);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.colores-tarjeta {
+  margin-top: 13px;
+}
+
+.colores-tarjeta-titulo {
+  display: block;
+  margin-bottom: 8px;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
+
+.colores-tarjeta-lista {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-tarjeta-muestra {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: inline-block;
+}
+
+.colores-tarjeta-mas {
+  color: #777;
+  font-size: 11px;
+}
+
+.boton-ver-prenda {
+  width: 100%;
+  margin-top: 17px;
+  padding: 11px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  color: var(--negro);
+  border: 1px solid var(--dorado);
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.boton-ver-prenda:hover {
+  background: var(--dorado);
+  color: white;
+}

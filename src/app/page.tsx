@@ -610,10 +610,52 @@ export default function Home () {
                 </div>
 
                 <div className='datos-producto'>
+                  <span className='categoria-producto'>
+                    {producto.categoria.toUpperCase()}
+                  </span>
+
                   <h3>{producto.nombre}</h3>
+
                   <p className='precio-producto'>
                     {formatoPrecio(producto.precio)}
                   </p>
+
+                  {producto.colores.length > 0 && (
+                    <div className='colores-tarjeta'>
+                      <span className='colores-tarjeta-titulo'>
+                        Colores disponibles
+                      </span>
+
+                      <div className='colores-tarjeta-lista'>
+                        {producto.colores.slice(0, 5).map(color => (
+                          <span
+                            key={color.nombre}
+                            className='color-tarjeta-muestra'
+                            style={{ backgroundColor: color.codigo }}
+                            title={color.nombre}
+                            aria-label={color.nombre}
+                          />
+                        ))}
+
+                        {producto.colores.length > 5 && (
+                          <span className='colores-tarjeta-mas'>
+                            +{producto.colores.length - 5}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    type='button'
+                    className='boton-ver-prenda'
+                    onClick={() => {
+                      setFotoActiva(0)
+                      setProductoAbierto(producto)
+                    }}
+                  >
+                    VER PRENDA <span>↗</span>
+                  </button>
                 </div>
               </article>
             ))}
