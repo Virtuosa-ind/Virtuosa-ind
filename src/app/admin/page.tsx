@@ -123,6 +123,7 @@ export default function AdminPage () {
   const [descripcion, setDescripcion] = useState('')
   const [categoria, setCategoria] = useState<string>(categorias[0])
   const [precio, setPrecio] = useState('')
+  const [descuento, setDescuento] = useState('')
   const [estadoFormulario, setEstadoFormulario] =
     useState<EstadoProducto>('borrador')
 
@@ -245,6 +246,7 @@ export default function AdminPage () {
     setDescripcion('')
     setCategoria(categorias[0])
     setPrecio('')
+    setDescuento('')
     setEstadoFormulario('borrador')
 
     setVariantesFormulario([])
@@ -274,6 +276,7 @@ export default function AdminPage () {
     setDescripcion(producto.descripcion)
     setCategoria(producto.categoria)
     setPrecio(String(producto.precio))
+    setDescuento(producto.descuento ?? '')
     setEstadoFormulario(producto.estado)
     setFotosGuardadas(producto.fotos ?? [])
     setArchivosFotos([])
@@ -739,6 +742,7 @@ export default function AdminPage () {
       descripcion: descripcion.trim(),
       categoria,
       precio: Number(precio),
+      descuento: descuento.trim(),
       fotos: fotosGuardadas,
       variantes,
       estado: estadoSolicitado,
@@ -1413,6 +1417,15 @@ export default function AdminPage () {
                       onChange={event => setPrecio(event.target.value)}
                       placeholder='Ej.: 25000'
                       required
+                    />
+                  </label>
+                  <label>
+                    <span>Texto de descuento</span>
+                    <input
+                      type='text'
+                      value={descuento}
+                      onChange={event => setDescuento(event.target.value)}
+                      placeholder='Ej.: 20% OFF, 2x1, LIQUIDACIÓN'
                     />
                   </label>
 

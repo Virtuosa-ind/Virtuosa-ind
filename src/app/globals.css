@@ -502,11 +502,11 @@ input:focus-visible {
   font-weight: normal;
 }
 
-.precio-producto {
-  margin-bottom: 8px;
-  color: var(--dorado-oscuro);
-  font-size: 16px;
-  font-weight: bold;
+.descuento-producto {
+  margin: 0 0 8px;
+  color: #d62828;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .talles-producto {
@@ -2313,4 +2313,27 @@ button {
 .boton-ver-prenda:hover {
   background: var(--dorado);
   color: white;
+}
+/* Igualar la altura de las tarjetas y alinear los botones */
+.grilla-productos {
+  align-items: stretch;
+}
+
+.tarjeta-producto {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.datos-producto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.boton-ver-prenda {
+  margin-top: auto;
+}
+.colores-tarjeta {
+  margin-bottom: 14px;
 }

@@ -18,6 +18,7 @@ export type ProductoTienda = {
   nombre: string
   categoria: string
   precio: number
+  descuento?: string
   imagen: string
   imagenes: string[]
   descripcion?: string
@@ -32,6 +33,7 @@ type ProductoDB = {
   descripcion: string | null
   categoria: string
   precio: number | string
+  descuento: string | null
   created_at: string
 }
 
@@ -56,7 +58,7 @@ export async function obtenerCatalogoPublicado (): Promise<ProductoTienda[]> {
 
   const { data: filasProductos, error: errorProductos } = await supabase
     .from('products')
-    .select('id, nombre, descripcion, categoria, precio, created_at')
+    .select('id, nombre, descripcion, categoria, precio, descuento, created_at')
     .eq('estado', 'publicado')
     .order('created_at', { ascending: false })
 
@@ -139,6 +141,7 @@ export async function obtenerCatalogoPublicado (): Promise<ProductoTienda[]> {
       nombre: producto.nombre,
       categoria: producto.categoria,
       precio: Number(producto.precio),
+      descuento: producto.descuento ?? '',
       imagen: fotosProducto[0] ?? '',
       imagenes: fotosProducto,
       descripcion: producto.descripcion ?? '',

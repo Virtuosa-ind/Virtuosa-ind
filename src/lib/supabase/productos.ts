@@ -7,6 +7,7 @@ type ProductoDB = {
   descripcion: string | null
   categoria: string
   precio: number | string
+  descuento: string | null
   estado: 'borrador' | 'publicado' | 'oculto'
   created_at: string
   updated_at: string
@@ -102,6 +103,7 @@ export async function obtenerProductosSupabase (): Promise<Producto[]> {
     descripcion: producto.descripcion ?? '',
     categoria: producto.categoria,
     precio: Number(producto.precio),
+    descuento: producto.descuento ?? '',
 
     fotos: fotosDB
       .filter(foto => foto.product_id === producto.id)
@@ -264,6 +266,7 @@ export async function guardarProductoSupabase (
         descripcion: producto.descripcion,
         categoria: producto.categoria,
         precio: producto.precio,
+        descuento: producto.descuento?.trim() || null,
         estado: producto.estado
       },
 

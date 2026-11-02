@@ -29,6 +29,7 @@ export type Producto = {
   descripcion: string
   categoria: string
   precio: number
+  descuento?: string
   fotos: string[]
   variantes: VarianteProducto[]
   estado: EstadoProducto

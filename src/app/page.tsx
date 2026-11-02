@@ -619,6 +619,9 @@ export default function Home () {
                   <p className='precio-producto'>
                     {formatoPrecio(producto.precio)}
                   </p>
+                  {producto.descuento?.trim() && (
+                    <p className='descuento-producto'>{producto.descuento}</p>
+                  )}
 
                   {producto.colores.length > 0 && (
                     <div className='colores-tarjeta'>
