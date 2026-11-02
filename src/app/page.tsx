@@ -903,6 +903,11 @@ export default function Home () {
               <p className='precio-producto'>
                 {formatoPrecio(productoAbierto.precio)}
               </p>
+              {productoAbierto.descuento?.trim() && (
+                <p className='descuento-producto'>
+                  {productoAbierto.descuento}
+                </p>
+              )}
 
               {productoAbierto.descripcion?.trim() && (
                 <div className='descripcion-detalle-producto'>
