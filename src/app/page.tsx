@@ -474,16 +474,15 @@ export default function Home () {
           </button>
         </div>
 
-        <div className='portada-visual' aria-label='Presentación de la marca'>
-          <div className='marco-portada'>
-            <span className='marco-esquina esquina-superior' />
-            <div className='portada-iniciales'>
-              V<span>.</span>I
-            </div>
-            <div className='linea-portada' />
-            <p>VIRTUOSA IND.</p>
-            <span className='marco-esquina esquina-inferior' />
-          </div>
+        <div className='portada-visual'>
+          <Image
+            src='/foto-portada-virtuosa.png'
+            alt='Camisa beige, top marrón y short de jean'
+            width={1024}
+            height={1024}
+            priority
+            className='imagen-portada'
+          />
         </div>
       </section>
 

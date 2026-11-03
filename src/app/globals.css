@@ -291,6 +291,15 @@ input:focus-visible {
     ),
     var(--rosa);
 }
+.imagen-portada {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid var(--dorado);
+}
 
 .marco-portada {
   position: relative;
