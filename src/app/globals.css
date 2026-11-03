@@ -295,7 +295,7 @@ input:focus-visible {
   display: block;
   width: 100%;
   max-width: 440px;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 4;
   height: auto;
   object-fit: cover;
   border: 1px solid var(--dorado);
@@ -1896,7 +1896,7 @@ button {
   display: block;
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   padding: 0;
   overflow: hidden;
   border: 0;
@@ -2112,10 +2112,11 @@ button {
   }
 
   .detalle-producto-imagen > img {
-    width: auto;
+    display: block;
+    width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: 40dvh;
+    max-height: 65dvh;
     object-fit: contain;
     object-position: center;
   }
@@ -2233,11 +2234,13 @@ button {
   }
 
   .detalle-producto-imagen > img {
-    width: auto;
+    display: block;
+    width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: 40dvh;
+    max-height: 75dvh;
     object-fit: contain;
+    object-position: center;
   }
 }
 /* NOMBRES DE LAS PRENDAS EN EL CATÁLOGO */
