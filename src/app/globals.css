@@ -295,9 +295,9 @@ input:focus-visible {
   display: block;
   width: 100%;
   max-width: 440px;
-  aspect-ratio: 3 / 4;
   height: auto;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   border: 1px solid var(--dorado);
 }
 
@@ -627,9 +627,11 @@ input:focus-visible {
 }
 
 /* PIE DE PÁGINA */
-
 .pie {
-  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 20px 18px;
   background: var(--negro);
   color: var(--blanco);
   text-align: center;
@@ -637,22 +639,41 @@ input:focus-visible {
 
 .logo-pie {
   display: inline-block;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   font-size: 25px;
 }
 
 .pie p {
-  margin-bottom: 21px;
+  margin: 0 0 10px;
   color: #e2d7dc;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 12px;
   font-style: italic;
+  line-height: 1.5;
+}
+
+.credito-lucila {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0 0 9px;
+  padding: 0;
+  color: var(--dorado);
+  font-size: 12px;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.credito-lucila:hover {
+  opacity: 0.75;
 }
 
 .pie small {
   color: #c6bec3;
   font-size: 10px;
-  line-height: 1.8;
+  line-height: 1.5;
 }
 
 /* MENÚ LATERAL */
@@ -2348,4 +2369,85 @@ button {
 }
 .colores-tarjeta {
   margin-bottom: 14px;
+}
+
+/* ==========================================
+   GRILLA MÁS ANCHA - VIRTUOSA IND
+========================================== */
+
+/* Computadoras */
+.grilla-productos {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 20px;
+  row-gap: 28px;
+}
+
+/* Aprovechar mejor el ancho de la sección */
+.productos {
+  padding-right: 4%;
+  padding-left: 4%;
+}
+
+/* Tabletas */
+@media (max-width: 1050px) {
+  .grilla-productos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 24px;
+  }
+}
+
+/* Celulares */
+@media (max-width: 760px) {
+  .productos {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .grilla-productos {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+    row-gap: 20px;
+  }
+
+  .foto-producto,
+  .foto-producto-boton {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* Celulares pequeños */
+@media (max-width: 380px) {
+  .productos {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+
+  .grilla-productos {
+    column-gap: 6px;
+  }
+}
+
+/* Crédito de Lucila Studio en el pie de página */
+.credito-lucila {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 5px 0 8px;
+  padding: 0;
+  color: var(--dorado);
+  font-size: 12px;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.credito-lucila:hover {
+  opacity: 0.75;
 }

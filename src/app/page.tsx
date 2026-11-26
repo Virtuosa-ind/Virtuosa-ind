@@ -7,6 +7,7 @@ import {
   type OpcionColor,
   type ProductoTienda
 } from '@/lib/supabase/catalogo'
+
 const categorias = [
   'Remeras y musculosas',
   'Blusas y camisas',
@@ -42,6 +43,7 @@ export default function Home () {
   )
   const [fotoActiva, setFotoActiva] = useState(0)
   const inicioToqueDetalle = useRef<number | null>(null)
+  const detalleEnHistorial = useRef(false)
 
   const [categoriaActiva, setCategoriaActiva] = useState('Todos los productos')
 
@@ -95,6 +97,23 @@ export default function Home () {
     }
   }, [])
 
+  // Si la persona presiona atrás en el celular o navegador,
+  // cerrar solamente la ventana de detalles.
+  useEffect(() => {
+    function manejarBotonAtras () {
+      if (detalleEnHistorial.current) {
+        detalleEnHistorial.current = false
+        setProductoAbierto(null)
+      }
+    }
+
+    window.addEventListener('popstate', manejarBotonAtras)
+
+    return () => {
+      window.removeEventListener('popstate', manejarBotonAtras)
+    }
+  }, [])
+
   const productosFiltrados = productos.filter(
     producto =>
       categoriaActiva === 'Todos los productos' ||
@@ -110,6 +129,7 @@ export default function Home () {
     (total, item) => total + item.precioUnitario * item.cantidad,
     0
   )
+
   const fotosDetalle = productoAbierto
     ? productoAbierto.imagenes?.length
       ? productoAbierto.imagenes
@@ -119,6 +139,35 @@ export default function Home () {
     : []
 
   const fotoVisible = fotosDetalle[fotoActiva] ?? fotosDetalle[0] ?? ''
+
+  // Abrir los detalles y guardar una entrada en el historial del navegador.
+  function abrirDetalleProducto (producto: ProductoTienda) {
+    window.history.pushState(
+      {
+        ...window.history.state,
+        virtuosaDetalleProducto: true
+      },
+      '',
+      window.location.href
+    )
+
+    detalleEnHistorial.current = true
+
+    setFotoActiva(0)
+    setProductoAbierto(producto)
+  }
+
+  // Cerrar los detalles y quitar su entrada del historial.
+  function cerrarDetalleProducto () {
+    const tieneEntrada = detalleEnHistorial.current
+
+    detalleEnHistorial.current = false
+    setProductoAbierto(null)
+
+    if (tieneEntrada) {
+      window.history.back()
+    }
+  }
 
   function seleccionarCategoria (categoria: string) {
     setCategoriaActiva(categoria)
@@ -550,10 +599,7 @@ export default function Home () {
                     type='button'
                     className='foto-producto foto-producto-boton'
                     aria-label={`Ver detalles de ${producto.nombre}`}
-                    onClick={() => {
-                      setFotoActiva(0)
-                      setProductoAbierto(producto)
-                    }}
+                    onClick={() => abrirDetalleProducto(producto)}
                     style={
                       !(producto.imagenes?.[0] || producto.imagen)
                         ? {
@@ -651,10 +697,7 @@ export default function Home () {
                   <button
                     type='button'
                     className='boton-ver-prenda'
-                    onClick={() => {
-                      setFotoActiva(0)
-                      setProductoAbierto(producto)
-                    }}
+                    onClick={() => abrirDetalleProducto(producto)}
                   >
                     VER PRENDA <span>↗</span>
                   </button>
@@ -696,10 +739,7 @@ export default function Home () {
 
       {/* DETALLES DE LA PRENDA */}
       {productoAbierto && (
-        <div
-          className='fondo-detalle-producto'
-          onClick={() => setProductoAbierto(null)}
-        >
+        <div className='fondo-detalle-producto' onClick={cerrarDetalleProducto}>
           <section
             className='detalle-producto-modal'
             role='dialog'
@@ -711,7 +751,7 @@ export default function Home () {
               type='button'
               className='cerrar-detalle-producto'
               aria-label='Cerrar detalles'
-              onClick={() => setProductoAbierto(null)}
+              onClick={cerrarDetalleProducto}
             >
               ✕
             </button>
@@ -848,7 +888,6 @@ export default function Home () {
                             cursor: 'pointer'
                           }}
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={foto}
                             alt={`${productoAbierto.nombre} - foto ${
@@ -1069,7 +1108,7 @@ export default function Home () {
                 type='button'
                 onClick={() => {
                   if (agregarAlCarrito(productoAbierto)) {
-                    setProductoAbierto(null)
+                    cerrarDetalleProducto()
                   }
                 }}
               >
@@ -1152,6 +1191,36 @@ export default function Home () {
         </a>
 
         <p>Vestida de fuerza y dignidad · Sin temor al futuro</p>
+
+        <a
+          className='credito-lucila'
+          href='https://www.instagram.com/lucila.studio.ar/'
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='Instagram de Lucila Studio'
+        >
+          <span>Creada por</span>
+
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='15'
+            height='15'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            aria-hidden='true'
+          >
+            <rect x='3' y='3' width='18' height='18' rx='5' />
+            <circle cx='12' cy='12' r='4' />
+            <circle cx='17.5' cy='6.5' r='0.5' fill='currentColor' />
+          </svg>
+
+          <span>@lucila.studio.ar</span>
+        </a>
+
         <small>© 2026 VIRTUOSA IND. Todos los derechos reservados.</small>
       </footer>
 
